@@ -9,30 +9,37 @@ public class MyShrinkingBehaivor : MonoBehaviour
     Transform platform;
     [SerializeField]
     float TotalTimeShrinking;
-    [SerializeField]
+    float elapsedTimeShrinking;
     bool bContinueShrinking;
     Vector3 originalScale;
     Vector3 minimumScale;
 
+    float tempElapsedTime;
 
     private void Start()
     {
         originalScale = platform.localScale;
         minimumScale = new Vector3(0.01f, originalScale.y, originalScale.z);
         bContinueShrinking = false;
-
+        //elapsedTimeShrinking = 0.001f;
     }
     private void Update()
     {
         if (bContinueShrinking)
-            transform.localScale = LerpScale(transform.localScale, minimumScale, TotalTimeShrinking);
+        {
+            tempElapsedTime += Time.deltaTime;
+            float percentageComplete = tempElapsedTime / TotalTimeShrinking;
+            platform.localScale = Vector3.Lerp(originalScale, minimumScale, percentageComplete);
+        }
+        //platform.localScale = LerpScale(platform.localScale, minimumScale, ref elapsedTimeShrinking, TotalTimeShrinking);
     }
 
-    Vector3 LerpScale(Vector3 init, Vector3 final, float totalTime)
+    Vector3 LerpScale(Vector3 init, Vector3 final, ref float elapsedTime, float totalTime)
     {
-        float continueTimeToLerp = Mathf.Abs(init.x - final.x) * totalTime / Mathf.Abs(originalScale.x - minimumScale.x);
-
-        return Vector3.Lerp(init, final, continueTimeToLerp);
+        elapsedTime += Time.deltaTime;
+        float percentageComplete = elapsedTime / totalTime;
+        Debug.Log(elapsedTime);
+        return Vector3.Lerp(init, final, percentageComplete);
     }
 
 
@@ -43,7 +50,7 @@ public class MyShrinkingBehaivor : MonoBehaviour
             bContinueShrinking = true;
     }
 
-    private void OnCollisionExit2D(Collision2D other)
+    private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
             bContinueShrinking = false;

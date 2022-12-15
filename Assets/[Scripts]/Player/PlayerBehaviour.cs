@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    [Header("Movement Properties")] 
+    [Header("Movement Properties")]
     public float horizontalForce;
     public float horizontalSpeed;
     public float verticalForce;
@@ -17,15 +17,15 @@ public class PlayerBehaviour : MonoBehaviour
     public LayerMask groundLayerMask; // the stuff we can collide with
     public bool isGrounded;
 
-    [Header("Animations")] 
+    [Header("Animations")]
     public Animator animator;
     public PlayerAnimationState playerAnimationState;
 
-    [Header("Dust Trail Effect")] 
+    [Header("Dust Trail Effect")]
     public ParticleSystem dustTrail;
     public Color dustTrailColour;
 
-    [Header("Screen Shake Properties")] 
+    [Header("Screen Shake Properties")]
     public CinemachineVirtualCamera playerCamera;
     public CinemachineBasicMultiChannelPerlin perlin;
     public float shakeIntensity;
@@ -33,12 +33,12 @@ public class PlayerBehaviour : MonoBehaviour
     public float shakeTimer;
     public bool isCameraShaking;
 
-    [Header("Health System")] 
+    [Header("Health System")]
     public HealthBarController health;
     public LifeCounterController life;
     public DeathPlaneController deathPlane;
 
-    [Header("Controls")] 
+    [Header("Controls")]
     public Joystick leftStick;
     [Range(0.1f, 1.0f)]
     public float verticalThreshold;
@@ -172,7 +172,11 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (x != 0.0f)
         {
-            transform.localScale = new Vector3((x > 0.0f) ? 1.0f : -1.0f, 1.0f, 1.0f);
+            var tempScale = transform.localScale;
+            //$ change for a shriking platform
+            //transform.localScale = new Vector3((x > 0.0f) ? 1.0f : -1.0f, 1.0f, 1.0f);
+            transform.localScale = new Vector3((x > 0.0f) ? Mathf.Abs(tempScale.x) * 1.0f : Mathf.Abs(tempScale.x) * -1.0f,
+                                                              tempScale.y, tempScale.z);
         }
     }
 
@@ -190,10 +194,10 @@ public class PlayerBehaviour : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if(other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy"))
         {
             health.TakeDamage(20);
-            
+
             soundManager.PlaySoundFX(Sound.HURT, Channel.PLAYER_HURT_FX);
             ShakeCamera();
         }
