@@ -9,50 +9,91 @@ public class MyShrinkingBehaivor : MonoBehaviour
     Transform platform;
     [SerializeField]
     float TotalTimeShrinking;
-    float elapsedTimeShrinking;
-    bool bContinueShrinking;
+    [SerializeField]
+    float TotalTimeExpand;
+    [SerializeField]
     Vector3 originalScale;
+    [SerializeField]
     Vector3 minimumScale;
-
+    [SerializeField]
     float tempElapsedTime;
+
+    [SerializeField]
+    Vector3 init;
+    [SerializeField]
+    Vector3 final;
+    [SerializeField]
+    float timeTrans;
+    [SerializeField]
+    float finalTime;
+    [SerializeField]
+    float percentageComplete;
+
+
 
     private void Start()
     {
         originalScale = platform.localScale;
         minimumScale = new Vector3(0.01f, originalScale.y, originalScale.z);
-        bContinueShrinking = false;
-        //elapsedTimeShrinking = 0.001f;
+        StartExpanding();
     }
     private void Update()
     {
-        if (bContinueShrinking)
-        {
-            tempElapsedTime += Time.deltaTime;
-            float percentageComplete = tempElapsedTime / TotalTimeShrinking;
-            platform.localScale = Vector3.Lerp(originalScale, minimumScale, percentageComplete);
-        }
-        //platform.localScale = LerpScale(platform.localScale, minimumScale, ref elapsedTimeShrinking, TotalTimeShrinking);
-    }
+        // if (bContinueShrinking)
+        // {
+        //     tempElapsedTime += Time.deltaTime;
+        //     var tempDeltaScaleX = originalScale.x - platform.localScale.x;
+        //     var percentageScale =  tempDeltaScaleX / platform.localScale.x;
 
-    Vector3 LerpScale(Vector3 init, Vector3 final, ref float elapsedTime, float totalTime)
-    {
-        elapsedTime += Time.deltaTime;
-        float percentageComplete = elapsedTime / totalTime;
-        Debug.Log(elapsedTime);
-        return Vector3.Lerp(init, final, percentageComplete);
-    }
+        //     float T2 = TotalTimeShrinking * tempElapsedTime / TotalTimeShrinking;
+        //     platform.localScale = Vector3.Lerp(originalScale, minimumScale, percentageComplete);
+        //     TotalTimeExpand = 0f;
+        // }
+        // else
+        // {
 
+        tempElapsedTime += Time.deltaTime;
+        percentageComplete = tempElapsedTime / finalTime;
+        platform.localScale = Vector3.Lerp(init, final, percentageComplete);
+
+    }
 
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
-            bContinueShrinking = true;
+        {
+            StartShirking();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
-            bContinueShrinking = false;
+        {
+            StartExpanding();
+        }
+    }
+
+    void StartShirking()
+    {
+        init = originalScale;
+        final = minimumScale;
+        var timeLeft = TotalTimeShrinking * (platform.localScale.x - final.x) / (init.x - final.x);
+        timeTrans = TotalTimeShrinking - timeLeft;
+        tempElapsedTime = timeTrans;
+        finalTime = TotalTimeShrinking;
+        Debug.Log("StartShirking in seconds: " + timeLeft);
+    }
+
+    void StartExpanding()
+    {
+        init = minimumScale;
+        final = originalScale;
+        var timeLeft = TotalTimeExpand * (final.x - platform.localScale.x) / (final.x - init.x);
+        timeTrans = TotalTimeExpand - timeLeft;
+        tempElapsedTime = timeTrans;
+        finalTime = TotalTimeExpand;
+        Debug.Log("start expanding in seconds: " + timeLeft);
     }
 }
