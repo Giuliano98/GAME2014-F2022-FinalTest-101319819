@@ -1,3 +1,12 @@
+/*
+Source File Name: MyMovingPlatform.cs
+Student Name: Giuliano Venturo Gonzales
+StudentID: 1019819
+Date Last Modified: 2022/12/15
+Description: Move the gameObject between points (Positions)
+
+*/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

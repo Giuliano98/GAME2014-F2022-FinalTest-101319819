@@ -1,10 +1,22 @@
+/*
+Source File Name: MyShrinkingBehaivor.cs
+Student Name: Giuliano Venturo Gonzales
+StudentID: 1019819
+Date Last Modified: 2022/12/15
+Description: Shrink and Expand in a time given. Use a lerp always on update, but the var just change when the player enter or exits
+
+*/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MyShrinkingBehaivor : MonoBehaviour
 {
-
+    [SerializeField]
+    AudioSource audioSourceShrinking;
+    [SerializeField]
+    AudioSource audioSourceExpanding;
     [SerializeField]
     Transform Platform;
     [SerializeField]
@@ -21,13 +33,13 @@ public class MyShrinkingBehaivor : MonoBehaviour
     float finalTime;
     float percentageComplete;
 
+    bool isShrinking = false;
 
 
     private void Start()
     {
         originalScale = Platform.localScale;
         minimumScale = new Vector3(0.01f, originalScale.y, originalScale.z);
-
         StartExpanding();
     }
 
@@ -36,18 +48,32 @@ public class MyShrinkingBehaivor : MonoBehaviour
         tempElapsedTime += Time.deltaTime;
         percentageComplete = tempElapsedTime / finalTime;
         Platform.localScale = Vector3.Lerp(init, final, percentageComplete);
+        if ((percentageComplete > 1f) && audioSourceExpanding.isPlaying)
+            audioSourceExpanding.Stop();
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
+        {
+            audioSourceExpanding.Stop();
+            isShrinking = true;
             StartShirking();
+            audioSourceShrinking.Play();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
+        {
+            audioSourceShrinking.Stop();
+            isShrinking = false;
             StartExpanding();
+            audioSourceExpanding.Play();
+        }
+
     }
 
 
