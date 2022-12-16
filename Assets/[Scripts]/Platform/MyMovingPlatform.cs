@@ -10,7 +10,7 @@ public class MyMovingPlatform : MonoBehaviour
     int startingPoint;
     [SerializeField]
     Transform[] points;
-    int i;
+    int i = 0;
 
     void Start()
     {

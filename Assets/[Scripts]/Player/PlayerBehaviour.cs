@@ -155,6 +155,9 @@ public class PlayerBehaviour : MonoBehaviour
 
         if ((isGrounded) && (y > verticalThreshold))
         {
+            //$ So don't takes the speed of the platform
+            if (Mathf.Abs(rigidbody2D.velocity.y) > 0)
+                rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0f);
             rigidbody2D.AddForce(Vector2.up * verticalForce, ForceMode2D.Impulse);
             soundManager.PlaySoundFX(Sound.JUMP, Channel.PLAYER_SOUND_FX);
         }
