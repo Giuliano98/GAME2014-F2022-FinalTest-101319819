@@ -16,22 +16,22 @@ public class MyMovingPlatform : MonoBehaviour
     [SerializeField]
     float speed;
     [SerializeField]
-    int startingPoint;
-    [SerializeField]
-    Transform[] points;
-    int i = 0;
+    Transform[] arrPoints;
+    int index;
 
-    void Start()
+    private void Start()
     {
-        transform.position = points[startingPoint].position;
+        index = 0;
+        // move the platform to the first point
+        transform.position = arrPoints[index].position;
     }
 
     private void Update()
     {
-        if (Vector2.Distance(transform.position, points[i].position) < 0.02f)
-            i = (i + 1 == points.Length) ? 0 : i + 1;
+        if (Vector2.Distance(transform.position, arrPoints[index].position) < 0.03f)
+            index = (index + 1 == arrPoints.Length) ? 0 : index + 1;
 
-        transform.position = Vector2.MoveTowards(transform.position, points[i].position, speed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, arrPoints[index].position, speed * Time.deltaTime);
     }
 
 }

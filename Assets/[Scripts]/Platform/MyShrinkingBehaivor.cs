@@ -33,7 +33,7 @@ public class MyShrinkingBehaivor : MonoBehaviour
     float finalTime;
     float percentageComplete;
 
-    bool isShrinking = false;
+    bool isShrinking;
 
 
     private void Start()

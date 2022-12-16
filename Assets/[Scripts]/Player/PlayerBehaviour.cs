@@ -43,12 +43,12 @@ public class PlayerBehaviour : MonoBehaviour
     [Range(0.1f, 1.0f)]
     public float verticalThreshold;
 
-    private Rigidbody2D rigidbody2D;
+    private Rigidbody2D rb2D;
     private SoundManager soundManager;
 
     void Start()
     {
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        rb2D = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         health = FindObjectOfType<PlayerHealth>().GetComponent<HealthBarController>();
         life = FindObjectOfType<LifeCounterController>();
@@ -118,10 +118,10 @@ public class PlayerBehaviour : MonoBehaviour
 
             x = (x > 0.0) ? 1.0f : -1.0f; // sanitizing x
 
-            rigidbody2D.AddForce(Vector2.right * x * horizontalForce * ((isGrounded) ? 1.0f : airFactor));
+            rb2D.AddForce(Vector2.right * x * horizontalForce * ((isGrounded) ? 1.0f : airFactor));
 
-            var clampedXVelocity = Mathf.Clamp(rigidbody2D.velocity.x, -horizontalSpeed, horizontalSpeed);
-            rigidbody2D.velocity = new Vector2(clampedXVelocity, rigidbody2D.velocity.y);
+            var clampedXVelocity = Mathf.Clamp(rb2D.velocity.x, -horizontalSpeed, horizontalSpeed);
+            rb2D.velocity = new Vector2(clampedXVelocity, rb2D.velocity.y);
 
             ChangeAnimation(PlayerAnimationState.RUN);
 
@@ -155,10 +155,10 @@ public class PlayerBehaviour : MonoBehaviour
 
         if ((isGrounded) && (y > verticalThreshold))
         {
-            //$ So don't takes the speed of the platform
-            if (Mathf.Abs(rigidbody2D.velocity.y) > 0)
-                rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0f);
-            rigidbody2D.AddForce(Vector2.up * verticalForce, ForceMode2D.Impulse);
+            //$ So don't takes the speed of the platform 
+            if (Mathf.Abs(rb2D.velocity.y) > 0)
+                rb2D.velocity = new Vector2(rb2D.velocity.x, 0f);
+            rb2D.AddForce(Vector2.up * verticalForce, ForceMode2D.Impulse);
             soundManager.PlaySoundFX(Sound.JUMP, Channel.PLAYER_SOUND_FX);
         }
     }
